@@ -1,0 +1,83 @@
+{% load bootstrap5 %}
+{% load static %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+	<style>
+		.navbar {
+			background-color: #333;
+			overflow: hidden;
+			padding: 20px; /* Add padding to the navbar */
+		}
+
+		.navbar a {
+			float: left;
+			color: #f2f2f2;
+			text-align: center;
+			padding: 14px 16px;
+			text-decoration: none;
+			font-size: 17px;
+		}
+
+		.navbar a:hover {
+			background-color: #ddd;
+			color: black;
+		}
+        .right {
+            margin-left: auto;
+        }
+
+		.active {
+			background-color: #4CAF50;
+			color: white;
+		}
+	</style>
+</head>
+        <title>{% block title %}(){% endblock title %}</title>
+        {% bootstrap_css %}
+    </head>
+    <body>
+        <nav class="navbar navbar-expand navbar-darkpyth bg-dark">
+            <a class="navbar-brand" href="{% url 'schedule_advisor:home' %}">Home</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                  {% if user.is_teacher == False %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'schedule_advisor:schedule' %}">My Schedule</a>
+                </li>
+                  {% endif %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'schedule_advisor:courses' %}">Courses</a>
+                </li>
+                  {% if user.is_teacher == False %}
+                  <li class="nav-item">
+                  <a class="nav-link" href="{% url 'schedule_advisor:shopping_cart'%}">Shopping Cart</a>
+                </li>
+                  {% endif %}
+              <!--</ul>-->
+                {% if user.is_authenticated %}
+              <!--<ul class="nav navbar-nav navbar-right">-->
+                <li class="right">
+                  <a class="nav-link" href="{% url 'schedule_advisor:login' %}">Log Out</a>
+                </li>
+              <!--</ul>-->
+                {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'schedule_advisor:login' %}">Login</a>
+                </li>
+              </ul>
+                {% endif %}
+            </div>
+          </nav>
+
+        {% block content %}
+        {% endblock content %}
+        {% bootstrap_javascript %}
+    </body>
+</html>

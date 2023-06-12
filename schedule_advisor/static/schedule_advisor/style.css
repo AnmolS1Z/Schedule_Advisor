@@ -1,0 +1,11 @@
+body {
+    background: white url("media/sabre.png") no-repeat;
+    background-size: 40%;
+    background-position: center -105%;
+}
+button{
+    position:absolute;
+    color: #FFA500;
+    bottom: 12.5%;
+    right:46%;
+}
