@@ -1,0 +1,91 @@
+{% extends 'schedule_advisor/base.html' %}
+{% load static %}
+{% load socialaccount %}
+<!--https://dev.to/mdrhmn/django-google-authentication-using-django-allauth-18f8, learned from this -->
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    {% if messages %}
+        <div class="messages" >
+            {% for message in messages %}
+
+            {% endfor %}
+        </div>
+        {% endif %}
+<!-- html code for things we want displayed on the home screen goes here -->
+{% if user.is_authenticated %}
+  {% if user.is_teacher %}
+        <h1>Welcome, Teacher {{ user.username }}!</h1>
+        <h3>View Student Shopping Carts</h3>
+        <table style ="margin: auto;">
+            <thead>
+                <tr>
+                    <th style = "padding: 12px;"> Student </th>
+                    <th style = "padding: 12px;"> Status </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stdnt in users %}
+                    {% if stdnt.is_teacher == False and stdnt.status != -2%}
+                    <tr>
+                        <td style = "padding: 12px;"><a href={% url 'schedule_advisor:student_cart' stdnt.id %}>{{stdnt.username}}</a></td>
+                        <td style = "padding: 12px;">
+                            {% if stdnt.status == -1 %}
+                            Rejected
+                            {% elif stdnt.status == 1 %}
+                            Approved
+                            {% else %}
+                            Undetermined
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    <!-- {% for stdnt in users %}
+        {% if stdnt.is_teacher == False and stdnt.status != -2%}
+    <a href={% url 'schedule_advisor:student_cart' stdnt.id %}>{{stdnt.username}}</a>
+            {% if stdnt.status == -1 %}
+                <p>Rejected</p>
+            {% elif stdnt.status == 1 %}
+                <p>Approved</p>
+            {% else %}
+                <p>Undetermined</p>
+            {% endif %}
+            <br>
+        {% endif %}
+    {% endfor %} -->
+    
+    {% else %}
+        <h1>Welcome, Student {{ user.username }}!</h1>
+        {% if user.status == -2 %}
+            <link rel="stylesheet" href="{% static 'schedule_advisor/status0.css' %}">
+            <p>It's time to pick courses for next semester! Head to the Courses link at the top to get started.</p>
+        {% elif user.status == 1 %}
+            <link rel="stylesheet" href="{% static 'schedule_advisor/approved_schedule.css' %}">
+            <p>{{user.message}}</p>
+        {% elif user.status == -1 %}
+    <link rel="stylesheet" href="{% static 'schedule_advisor/rejected_schedule.css' %}">
+            <p>Your schedule has been rejected for the following reasons.</p>
+            <br>
+            <p>{{user.message}}</p>
+        {% else %}
+            <p>{{user.message}}</p>
+        {% endif %}
+    {% endif %}
+    <br>
+
+{% else %}
+    <br>
+    <h1>Welcome to the Schedule Advisor Application! <br> Ready for Academic Advising?</h1>
+    <br>
+
+  <button class="btn btn-outline-info"><a href="{% provider_login_url 'google'%}">Get Started</a></button>
+    <div>
+        <link rel="stylesheet" href="{% static 'schedule_advisor/style.css' %}">
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'schedule_advisor/base.html'%}
+{% load static %}
+{% load socialaccount %}
+{% block content %}
+    <div class="container">
+        <h2 class = "text-center">Evaluate the Student's Schedule for the Upcoming Semester! </h2>
+
+   
+<div class="row">
+    <br>
+    <div class="container">
+    <form action="{% url 'schedule_advisor:rejection' student.id %}" method="GET">
+        <label for="rejection">Enter Information about Rejection:</label>
+        <br>
+        <input type="text" name="rejection" id="rejection" style="width: 1200px;" placeholder="Reject?">
+        <br>
+        <br>
+        <div class="text-center">
+        <button type='submit' class="btn btn-outline-info" style="width: 15%;">Reject</button>
+        </div>
+    </form>
+        <div class="text-center">
+    <a href="{% url 'schedule_advisor:approval' student.id %}"><button class="btn btn-outline-info" style="width: 15%;">Approve</button></a>
+        </div>
+        <br>
+        </div>
+    <br>
+    <br>
+          {% for course in student.shopping_cart.all %}
+              <div class="col-md-4 col-sm-6 col-lg-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                      <p class="card-title">{{ course.subject }} {{ course.catalog_number}}</p>
+                        <p>{{course.descr}}</p>
+                        {% for meet in course.meeting.all %}
+                            {% if meet.days|default:'' == '-' and meet.st_time|default:'' == ':' and meet.end_time|default:'' == ':' %}
+                                <p>No official meeting time.</p>
+                            {% else %}
+                            <p>{{meet.days}}: {{meet.st_time}}-{{meet.end_time}}</p>
+                            {% endif %}
+                            {% endfor %}
+                        <u><p>{{course.class_nbr}}</p></u>
+                        <p>{{course.enrollment}}/{{course.class_capacity}}</p>
+                        {% for instructor in course.instructors.all %}
+                            <p>{{instructor.name}} - {{instructor.email}}</p>
+                        {% endfor %}
+                      <hr>
+                            <a href="/courses/{{course.id}}"
+                        ><input
+                        type="submit"
+                        value="Learn More"
+                        class="btn btn-danger btn-sm"
+                        type="button"
+                        /></a>
+                    </div>
+                </div>
+                <br><br><br>
+              </div>
+          {% endfor %}
+            </div>
+        </div>
+{% endblock %}
